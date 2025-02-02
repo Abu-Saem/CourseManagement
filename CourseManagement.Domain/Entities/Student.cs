@@ -11,6 +11,8 @@ namespace CourseManagement.Domain.Entities
     {
         public string FullName { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public ICollection<Course> Courses { get; set; } = new List<Course>();
+        public int DepartmentId { get; set; }  // Foreign Key
+        public Department Department { get; set; }  // Navigation Property
+        public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>(); // Many-to-Many
     }
 }

@@ -14,5 +14,8 @@ namespace CourseManagement.Domain.Entities
         public int CreditHours { get; set; }
         public int DepartmentId { get; set; }
         public Department? Department { get; set; }
+
+        public ICollection<Enrollment> Enrollments { get; set; } = new List<Enrollment>(); // Many-to-Many
+
     }
 }
