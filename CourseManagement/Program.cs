@@ -1,6 +1,9 @@
 using CourseManagement.Infrastructure.DbModel;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using CourseManagement.Application.Interfaces;
+using CourseManagement.Application.Services;
+using CourseManagement.Infrastructure.Repository;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,7 +53,8 @@ builder.Services.AddDbContext<CourseManagementDbContext>(options =>
 //#endregion
 
 #region Service Register
-
+builder.Services.AddScoped<DepartmentService>();
+builder.Services.AddScoped<IDepartment, DepartmentRepository>();
 #endregion
 
 
