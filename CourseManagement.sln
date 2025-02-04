@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourseManagement.Infrastruc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourseManagement.Domain", "CourseManagement.Domain\CourseManagement.Domain.csproj", "{EA759CD7-D008-41A0-B734-F05116C32591}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CourseManagement.Tests", "CourseManagement.Tests\CourseManagement.Tests.csproj", "{2227CF4B-99EE-48F0-84BD-DC743E005A53}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{EA759CD7-D008-41A0-B734-F05116C32591}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA759CD7-D008-41A0-B734-F05116C32591}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EA759CD7-D008-41A0-B734-F05116C32591}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2227CF4B-99EE-48F0-84BD-DC743E005A53}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2227CF4B-99EE-48F0-84BD-DC743E005A53}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2227CF4B-99EE-48F0-84BD-DC743E005A53}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2227CF4B-99EE-48F0-84BD-DC743E005A53}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
