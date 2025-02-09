@@ -1,9 +1,11 @@
-using CourseManagement.Infrastructure.DbModel;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+using CourseManagement.Application;
 using CourseManagement.Application.Interfaces;
 using CourseManagement.Application.Services;
+using CourseManagement.Infrastructure;
+using CourseManagement.Infrastructure.DbModel;
 using CourseManagement.Infrastructure.Repository;
+using Microsoft.EntityFrameworkCore;
+using StackExchange.Redis;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,6 +35,17 @@ builder.Services.AddDbContext<CourseManagementDbContext>(options =>
         sqlOptions.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);  // Configure query splitting
     })
 );
+#endregion
+
+#region Redis Connection
+var redisSettings = builder.Configuration.GetSection("RedisCacheSettings");
+if (redisSettings.GetValue<bool>("Enabled"))
+{
+    builder.Services.AddSingleton<IConnectionMultiplexer>(
+        ConnectionMultiplexer.Connect(redisSettings["ConnectionString"])
+    );
+    builder.Services.AddSingleton<IRedisCacheService, RedisCacheService>();
+}
 #endregion
 
 //#region Authentication

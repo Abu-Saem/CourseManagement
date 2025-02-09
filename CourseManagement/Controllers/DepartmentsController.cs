@@ -36,7 +36,7 @@ namespace CourseManagement.Controllers
             return StatusCode(StatusCodes.Status201Created);
         }
 
-        [HttpPost]
+        [HttpDelete("{id}")]
         public IActionResult RemoveDepartment(int id)
         {
             _departmentService.RemoveDepartment(id);
