@@ -18,10 +18,12 @@ namespace CourseManagement.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetDepartments()
+        public async Task<IActionResult> GetDepartments()
         {
-            return Ok(_departmentService.GetDepartments());
+            var departments = await _departmentService.GetDepartmentsAsync();
+            return Ok(departments);
         }
+
 
         [HttpGet("{id}")]
         public IActionResult GetDepartment(int id)

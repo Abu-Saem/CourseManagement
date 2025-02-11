@@ -13,13 +13,15 @@ namespace CourseManagement.Tests.Services
     {
         private readonly Mock<IDepartment> _departmentRepositoryMock;
         private readonly DepartmentService _departmentService;
+        private readonly Mock<IRedisCacheService> _cacheServiceMock;
 
         public DepartmentServiceTests()
         {
             _departmentRepositoryMock = new Mock<IDepartment>();
+            _cacheServiceMock = new Mock<IRedisCacheService>();
 
             // If DepartmentService doesn't use AutoMapper, remove _mapperMock
-            _departmentService = new DepartmentService(_departmentRepositoryMock.Object);
+            _departmentService = new DepartmentService(_departmentRepositoryMock.Object, _cacheServiceMock.Object);
         }
 
         [Fact]
@@ -46,20 +48,26 @@ namespace CourseManagement.Tests.Services
         }
 
         [Fact]
-        public void InsertDepartment_ShouldAddDepartment()
+        public async Task GetDepartments_ShouldReturnFromCache_WhenDataExists()
         {
             // Arrange
-            var department = new Department { Id = 1, Name = "Physics" };
+            var cachedDepartments = new List<Department>
+        {
+            new Department { Id = 1, Name = "Computer Science" },
+            new Department { Id = 2, Name = "Mathematics" }
+        };
 
-            _departmentRepositoryMock
-                .Setup(repo => repo.AddDepartment(department))
-                .Verifiable();  // Ensures method is called
+            _cacheServiceMock
+                .Setup(cache => cache.GetCacheAsync<List<Department>>("departments"))
+                .ReturnsAsync(cachedDepartments);
 
             // Act
-            _departmentService.AddDepartment(department);
+            var result = await _departmentService.GetDepartmentsAsync();
 
             // Assert
-            _departmentRepositoryMock.Verify(repo => repo.AddDepartment(department), Times.Once);
+            result.Should().NotBeNull();
+            result.Should().HaveCount(2);
+            _departmentRepositoryMock.Verify(repo => repo.GetDepartmentsAsync(), Times.Never);
         }
 
         [Fact]

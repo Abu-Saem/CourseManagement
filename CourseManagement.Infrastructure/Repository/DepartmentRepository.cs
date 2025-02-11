@@ -10,9 +10,9 @@ namespace CourseManagement.Infrastructure.Repository
         public DepartmentRepository(CourseManagementDbContext model) : base(model)
         {
         }
-        public IEnumerable<Department> GetDepartments()
+        public async Task<IList<Department>> GetDepartmentsAsync()
         {
-            return dbModel.Departments;
+            return await GetListDataAsync<Department>();
         }
 
         public Department GetDepartment(int id)

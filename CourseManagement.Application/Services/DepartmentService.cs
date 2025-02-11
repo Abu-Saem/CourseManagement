@@ -11,10 +11,13 @@ namespace CourseManagement.Application.Services
     public class DepartmentService : IDepartment
     {
         private readonly IDepartment _departmentRepository;
+        private readonly IRedisCacheService _cacheService;
+        private readonly TimeSpan _cacheExpiration = TimeSpan.FromMinutes(10);
 
-        public DepartmentService(IDepartment departmentRepository)
+        public DepartmentService(IDepartment departmentRepository, IRedisCacheService cacheService)
         {
             _departmentRepository = departmentRepository;
+            _cacheService = cacheService;
         }
 
         public void AddDepartment(Department department)
@@ -27,9 +30,24 @@ namespace CourseManagement.Application.Services
             return _departmentRepository.GetDepartment(id);
         }
 
-        public IEnumerable<Department> GetDepartments()
+        public async Task<IList<Department>> GetDepartmentsAsync()
         {
-            return _departmentRepository.GetDepartments();
+            string cacheKey = "departments";
+
+            // Check if data is in Redis
+            var cachedDepartments = await _cacheService.GetCacheAsync<IList<Department>>(cacheKey);
+            if (cachedDepartments != null)
+            {
+                return cachedDepartments;
+            }
+
+            // If not, fetch from database
+            var departments = await _departmentRepository.GetDepartmentsAsync();
+
+            // Store in Redis for future requests
+            await _cacheService.SetCacheAsync(cacheKey, departments, _cacheExpiration);
+
+            return departments;
         }
 
         public void RemoveDepartment(int id)

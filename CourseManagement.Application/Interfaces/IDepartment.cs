@@ -4,7 +4,7 @@ namespace CourseManagement.Application.Interfaces
 {
     public interface IDepartment
     {
-        IEnumerable<Department> GetDepartments();
+        Task<IList<Department>> GetDepartmentsAsync();
         Department GetDepartment(int id);
         void AddDepartment(Department department);
         void RemoveDepartment(int id);

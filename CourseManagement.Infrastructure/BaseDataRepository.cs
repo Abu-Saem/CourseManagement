@@ -80,6 +80,18 @@ namespace CourseManagement.Infrastructure
                 throw;
             }
         }
+        protected async Task<IList<T>> GetListDataAsync<T>() where T : class
+        {
+            try
+            {
+                return await dbModel.Set<T>().ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                throw;
+            }
+        }
         protected IList<T> GetListData<T>(string interpolatedStoredProc, params object[] parameters) where T : class
         {
             try
