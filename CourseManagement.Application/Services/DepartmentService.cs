@@ -23,6 +23,9 @@ namespace CourseManagement.Application.Services
         public void AddDepartment(Department department)
         {
             _departmentRepository.AddDepartment(department);
+
+            _cacheService.RemoveCache("departments");
+            _cacheService.RemoveCache($"department_{department.Id}");
         }
 
         public Department GetDepartment(int id)
@@ -34,17 +37,13 @@ namespace CourseManagement.Application.Services
         {
             string cacheKey = "departments";
 
-            // Check if data is in Redis
             var cachedDepartments = await _cacheService.GetCacheAsync<IList<Department>>(cacheKey);
             if (cachedDepartments != null)
             {
                 return cachedDepartments;
             }
 
-            // If not, fetch from database
             var departments = await _departmentRepository.GetDepartmentsAsync();
-
-            // Store in Redis for future requests
             await _cacheService.SetCacheAsync(cacheKey, departments, _cacheExpiration);
 
             return departments;
@@ -53,6 +52,9 @@ namespace CourseManagement.Application.Services
         public void RemoveDepartment(int id)
         {
             _departmentRepository.RemoveDepartment(id);
+
+            _cacheService.RemoveCache("departments");
+            _cacheService.RemoveCache($"department_{id}");
         }
     }
 }

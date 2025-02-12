@@ -18,16 +18,31 @@ namespace CourseManagement.Infrastructure
             var serializedData = JsonConvert.SerializeObject(value);
             await _cacheDb.StringSetAsync(key, serializedData, expiration);
         }
+        public void SetCache<T>(string key, T value, TimeSpan expiration)
+        {
+            var serializedData = JsonConvert.SerializeObject(value);
+            _cacheDb.StringSet(key, serializedData, expiration);
+        }
 
         public async Task<T> GetCacheAsync<T>(string key)
         {
             var data = await _cacheDb.StringGetAsync(key);
             return data.IsNullOrEmpty ? default : JsonConvert.DeserializeObject<T>(data);
         }
+        public T GetCache<T>(string key)
+        {
+            var data = _cacheDb.StringGet(key);
+            return data.IsNullOrEmpty ? default : JsonConvert.DeserializeObject<T>(data);
+        }
 
         public async Task RemoveCacheAsync(string key)
         {
             await _cacheDb.KeyDeleteAsync(key);
+        }
+
+        public void RemoveCache(string key)
+        {
+            _cacheDb.KeyDelete(key);
         }
     }
 }

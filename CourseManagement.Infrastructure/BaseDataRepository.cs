@@ -30,6 +30,20 @@ namespace CourseManagement.Infrastructure
             }
         }
 
+        protected async Task<T> FindEntityAsync<T>(int primaryKey) where T : class
+        {
+            try
+            {
+                return await dbModel.Set<T>().FindAsync(primaryKey);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.ToString());
+                throw;
+            }
+        }
+
+
         protected void AddUpdateEntity<T>(T entity, bool keepDettached = true) where T : class
         {
             try
@@ -92,6 +106,7 @@ namespace CourseManagement.Infrastructure
                 throw;
             }
         }
+
         protected IList<T> GetListData<T>(string interpolatedStoredProc, params object[] parameters) where T : class
         {
             try
