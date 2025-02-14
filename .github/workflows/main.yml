@@ -1,0 +1,73 @@
+name: .NET Core CI/CD
+
+on:
+  push:
+    branches:
+      - master  # Change if your branch is different
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-test:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 8.0  # Change based on your project version
+
+      - name: Restore Dependencies
+        run: dotnet restore
+
+      - name: Build the Solution
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Run Unit Tests (xUnit)
+        run: dotnet test --configuration Release --no-restore --verbosity normal
+
+      - name: Publish Application
+        run: dotnet publish -c Release -o ./publish
+
+      - name: Upload Artifact (Published API)
+        uses: actions/upload-artifact@v3
+        with:
+          name: published-api
+          path: ./publish
+
+  deploy:
+    needs: build-test
+    runs-on: windows-latest
+
+    steps:
+      - name: Download Artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: published-api
+          path: ./deploy
+
+      - name: Deploy to IIS (Remote Server)
+        run: |
+          $server = "10.0.0.119" # Your laptop's IP look for ipv4
+          $username = "abu saem"
+          $password = "saem@2023"
+          $sitePath = "C:\inetpub\wwwroot\YourApiFolder" #Your API folder
+
+          $secpasswd = ConvertTo-SecureString $password -AsPlainText -Force
+          $credential = New-Object System.Management.Automation.PSCredential ($username, $secpasswd)
+
+          # Copy files to the IIS server
+          Invoke-Command -ComputerName $server -Credential $credential -ScriptBlock {
+              param ($sitePath)
+              Remove-Item -Recurse -Force $sitePath\*
+          } -ArgumentList $sitePath
+
+          Copy-Item -Path "./deploy/*" -Destination "\\$server\$sitePath" -Recurse -Force
+
+          # Restart IIS
+          Invoke-Command -ComputerName $server -Credential $credential -ScriptBlock { iisreset }
+        shell: pwsh
