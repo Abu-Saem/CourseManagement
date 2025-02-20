@@ -4,6 +4,8 @@ using CourseManagement.Application.Services;
 using CourseManagement.Infrastructure;
 using CourseManagement.Infrastructure.DbModel;
 using CourseManagement.Infrastructure.Repository;
+using Microsoft.AspNetCore.Mvc.Versioning;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 
@@ -37,6 +39,23 @@ builder.Services.AddDbContext<CourseManagementDbContext>(options =>
 );
 #endregion
 
+#region API Versioning
+builder.Services.AddApiVersioning(options =>
+{
+    options.ReportApiVersions = true; // Enables API version reporting
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new ApiVersion(1, 0); // Default: v1.0
+    options.ApiVersionReader = new UrlSegmentApiVersionReader(); // Reads version from URL
+});
+
+builder.Services.AddVersionedApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'VVV";  // Format as "v1"
+    options.SubstituteApiVersionInUrl = true;
+});
+
+#endregion
+
 #region Redis Connection
 var redisSettings = builder.Configuration.GetSection("RedisCacheSettings");
 if (redisSettings.GetValue<bool>("Enabled"))
@@ -48,7 +67,7 @@ if (redisSettings.GetValue<bool>("Enabled"))
 }
 #endregion
 
-//#region Authentication
+#region Authentication
 //builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 //        .AddJwtBearer(options =>
 //        {
@@ -63,7 +82,7 @@ if (redisSettings.GetValue<bool>("Enabled"))
 //                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
 //            };
 //        });
-//#endregion
+#endregion
 
 #region Service Register
 builder.Services.AddScoped<DepartmentService>();
