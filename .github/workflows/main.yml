@@ -55,7 +55,7 @@ jobs:
           $server = "10.0.0.119" # Your laptop's IP look for ipv4
           $username = "abu saem"
           $password = "saem@2023"
-          $sitePath = "C:\inetpub\wwwroot\YourApiFolder" #Your API folder
+          $sitePath = "C:\inetpub\wwwroot\CMSRelease" #Your API folder
 
           $secpasswd = ConvertTo-SecureString $password -AsPlainText -Force
           $credential = New-Object System.Management.Automation.PSCredential ($username, $secpasswd)
