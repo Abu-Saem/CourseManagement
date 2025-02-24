@@ -52,10 +52,10 @@ jobs:
 
       - name: Deploy to IIS (Remote Server)
         run: |
-          $server = "10.0.0.119" # Your laptop's IP look for ipv4
-          $username = "abu saem"
-          $password = "saem@2023"
-          $sitePath = "C:\inetpub\wwwroot\CMSRelease" #Your API folder
+          $server = "54.90.81.39" # Your laptop's IP look for ipv4
+          $username = "Administrator"
+          $password = "vYLz%%uB!KsJT&Fs?tUgfH37aye0kya4"
+          $sitePath = "D:\CMSL" #Your API folder
 
           $secpasswd = ConvertTo-SecureString $password -AsPlainText -Force
           $credential = New-Object System.Management.Automation.PSCredential ($username, $secpasswd)
